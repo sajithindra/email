@@ -88,16 +88,19 @@ async def update_user(data: UserUpdate):
             "id": data.id,
         }
         updates = {
-            "first_name": data.first_name,
-            "last_name": data.last_name,
-            "username": data.username,
+            "$set": {
+                "first_name": data.first_name,
+                "last_name": data.last_name,
+                "username": data.username,
+            }
         }
         client.privatemail.users.update_one(mongo_filter, updates)
         return {
             "message": "Successfully Updated user...",
-            "data": updates,
+            "data": data,
         }
-    except Exception:
+    except Exception as e:
+        traceback.print_tb(e.__traceback__)
         raise HTTPException(status_code=500, detail="Error Updating User")
 
 
@@ -487,7 +490,7 @@ async def reply_mail(reply: EmailReply):
     }
     parent = client.privatemail.replies.find_one(mongo_filter, project)
 
-    if parent or parent["reply"]["has_reply"]:
+    if parent:
         target = parent["reply"]["from_email"]
 
         updates = {
@@ -519,7 +522,6 @@ async def reply_mail(reply: EmailReply):
         }
         client.privatemail.emails.update_one(mongo_filter, update=updates)
 
-    print(target)
     reply_obj = {
         "id": reply_id,
         "reply": {

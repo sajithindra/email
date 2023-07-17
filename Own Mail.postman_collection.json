@@ -1,0 +1,306 @@
+{
+	"info": {
+		"_postman_id": "ece0b394-56af-4942-aef1-a2c8791b58b1",
+		"name": "Own Mail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17195439"
+	},
+	"item": [
+		{
+			"name": "Mails",
+			"item": [
+				{
+					"name": "Inbox",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/mail/received/navin3d@navin.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mail",
+								"received",
+								"navin3d@navin.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Mail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sent\": {\n        \"from_email\": \"navin30@navin.com\",\n        \"to_email\": [\n            \"navin3d@navin.com\"\n        ],\n        \"cc\": [],\n        \"bcc\": []\n    },\n  \"subject\": \"lakalakalaka\",\n  \"body\": \"hi shivaji lakalakalaka.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/mail/send",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mail",
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark As Read",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/mail/iRPlGzyeCFkcGeYligmEMoPDUEaKWXaDIXaeERWKuzhvRpgUgW/read/navin30@navin.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mail",
+								"iRPlGzyeCFkcGeYligmEMoPDUEaKWXaDIXaeERWKuzhvRpgUgW",
+								"read",
+								"navin30@navin.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forward Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/mail/yQcXkVnqGHhwHiibwnnuyCaIrqGfREqEbSNIxgDGcAjryaJcqu/forward/navin3d@navin.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mail",
+								"yQcXkVnqGHhwHiibwnnuyCaIrqGfREqEbSNIxgDGcAjryaJcqu",
+								"forward",
+								"navin3d@navin.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get A Mail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/mail/get/YxouAAEeHOUCFEZmnwwBfcYWuwITZAWSUfLliwgXOkSmyGENoO",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mail",
+								"get",
+								"YxouAAEeHOUCFEZmnwwBfcYWuwITZAWSUfLliwgXOkSmyGENoO"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Outbox",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/mail/sent/navin30@navin.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mail",
+								"sent",
+								"navin30@navin.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Reply Mail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"parent_id\": \"KoDoPziCcdKEYuIgsUPebHpJCHAzHUAQZvkyKFsMRgRiILaiRG\",\n  \"from_email\": \"navin3d@navin.com\",\n  \"subject\": \"testing reply 1\",\n  \"body\": \"hi navin 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/mail/reply",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mail",
+								"reply"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"navin\",\n  \"last_name\": \"durai\",\n  \"username\": \"navin\",\n  \"email_id\": \"navin30@navin.com\",\n  \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/user/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"xdhyoOEQWbtmrwRZHLOrsPrYZdQIYBqPHrMcOssKIalJknDjyA\",\n  \"first_name\": \"navin33\",\n  \"last_name\": \"dd\",\n  \"username\": \"navindd\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/user/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/user/update/password?email=navin30@navin.com&old_password=password&new_password=string",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"update",
+								"password"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "navin30@navin.com"
+								},
+								{
+									"key": "old_password",
+									"value": "password"
+								},
+								{
+									"key": "new_password",
+									"value": "string"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/user/navin30@navin.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"navin30@navin.com"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
