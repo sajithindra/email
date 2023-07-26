@@ -40,3 +40,15 @@ class EmailReply(BaseModel):
     from_email: str
     subject: Optional[str] = ""
     body: str
+
+
+class EmailForward(BaseModel):
+    parent_id: str
+    sent: dict = {
+        "from_email": "",
+        "to_email": [],
+        "cc": [],
+        "bcc": [],
+    },
+    subject: Optional[str] = ""
+    body: str

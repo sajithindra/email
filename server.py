@@ -1,6 +1,6 @@
 import uvicorn, random, string, traceback
 from datetime import datetime
-from models import User, UserUpdate, Email, EmailReply
+from models import User, UserUpdate, Email, EmailReply, EmailForward
 from settings import PORT, HOST, client
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -129,6 +129,11 @@ async def change_password(email: str, old_password: str, new_password: str):
 #######################################################################################################################
 ####################################         Mail Service         #####################################################
 #######################################################################################################################
+'''
+get_mail:
+    This api is to get the detail description of an particular mail with the mail's id field in the mongodb document.
+    Id is passed as a path variable
+'''
 @app.get("/mail/get/{object_id}")
 async def get_mail(object_id: str):
     try:
@@ -207,6 +212,12 @@ async def get_mail(object_id: str):
         raise HTTPException(status_code=500, detail="Error fetching mail.")
 
 
+'''
+get_sent_mails:
+    This api is to get the outbox of a particular person.
+    email of the person is passed as a path variable.
+    This api will return all the mails that are sent by the user.
+'''
 @app.get("/mail/sent/{email_id}")
 async def get_sent_mails(email_id: str):
     try:
@@ -285,6 +296,12 @@ async def get_sent_mails(email_id: str):
         raise HTTPException(status_code=500, detail="Error fetching mails...")
 
 
+'''
+get_received_mails:
+    This api is to get the inbox of a particular person.
+    email of the person is passed as a path variable.
+    This api will return all the mails that are forwarded, replied, cc, bcc or sent to him.
+'''
 @app.get("/mail/received/{email_id}")
 async def get_received_mails(email_id: str):
     try:
@@ -379,6 +396,12 @@ async def get_received_mails(email_id: str):
         raise HTTPException(status_code=500, detail="Error fetching mails...")
 
 
+'''
+send_mail:
+    This api is to send the mail to the particular person
+    The post request takes the mail contents as body.
+    This api will create a document in an the emails collection.
+'''
 @app.post("/mail/send")
 async def send_mail(mail: Email):
     try:
@@ -422,6 +445,12 @@ async def send_mail(mail: Email):
                 "reply_ids": [],
                 "has_reply": False,
             },
+            "forward": {
+                "parent_id": "",
+                "is_forward": False,
+                "forward_ids": [],
+                "has_forwards": False,
+            },
             "subject": mail.subject,
             "body": mail.body,
         }
@@ -434,6 +463,11 @@ async def send_mail(mail: Email):
         raise HTTPException(status_code=500, detail="Error Sending email...")
 
 
+'''
+mark_as_read:
+    This api is to mark a marticular email as read.
+    The request takes the email collection's id field and email of person who read the mail as path variable
+'''
 @app.get("/mail/{object_id}/read/{email_id}")
 async def mark_as_read(object_id: str, email_id: str):
     mongo_filter = {
@@ -473,6 +507,12 @@ async def mark_as_read(object_id: str, email_id: str):
     }
 
 
+'''
+reply_mail:
+    This api is to send the reply mail to the particular mail as a response.
+    The post request takes the mail contents as body.
+    This api will create a document in an the replies collection.
+'''
 @app.post("/mail/reply")
 async def reply_mail(reply: EmailReply):
     reply_id = ''.join(random.choices(string.ascii_letters, k=50))
@@ -532,6 +572,10 @@ async def reply_mail(reply: EmailReply):
             "reply_id": "",
             "has_reply": False
         },
+        "forward": {
+            "forward_ids": [],
+            "has_forwards": False,
+        },
         "subject": reply.subject,
         "body": reply.body,
     }
@@ -541,24 +585,101 @@ async def reply_mail(reply: EmailReply):
     }
 
 
-# @app.get("/mail/{object_id}/forward/{from_email}/to/{email_id}")
-# async def forward_mail(object_id: str, from_email: str, email_id: str):
-#     mongo_filter = {
-#         "object_id": object_id
-#     }
-#     updates = {
-#         "$set": {
-#             "forward": [{
-#                 "from_email": from_email,
-#
-#             }]
-#         }
-#     }
-#     client.privatemail.emails.update_one(filter=mongo_filter, update=updates)
-#     return {
-#         "message": f"Forwarded mail to {email_id}"
-#     }
+'''
+forward_mail:
+    This api is to forward a particular to a other person..
+    The post request takes the mail contents as body.
+    This api will create a document in an the replies collection.
+'''
+@app.post("/mail/forward")
+async def forward_mail(forward: EmailForward):
+    forward_id = ''.join(random.choices(string.ascii_letters, k=50))
+
+    mongo_filter = {
+        "id": forward.parent_id
+    }
+
+    project = {
+        "_id": 0,
+        "reply": 0,
+        "subject": 0,
+        "body": 0
+    }
+    parent_from_email = client.privatemail.emails.find_one(mongo_filter, project)
+    parent_from_reply = client.privatemail.replies.find_one(mongo_filter, project)
+
+    updates = {
+        "$set": {
+            "forward.has_forwards": True,
+        },
+        "$push": {
+            "forward.forward_ids": [forward_id],
+        }
+    }
+
+    if parent_from_email:
+        client.privatemail.emails.update_one(mongo_filter, update=updates)
+    elif parent_from_reply:
+        client.privatemail.replies.update_one(mongo_filter, update=updates)
+    else:
+        raise HTTPException(status_code=404, detail="Unable to find Parent mail Object...")
+
+    to_email = []
+    if len(forward.sent["to_email"]) > 0:
+        for email in forward.sent["to_email"]:
+            seen_obj = {
+                "email_id": email,
+                "read": False,
+            }
+            to_email.append(seen_obj)
+
+    cc = []
+    if len(forward.sent["cc"]) > 0:
+        for email in forward.sent["cc"]:
+            seen_obj = {
+                "email_id": email,
+                "read": False,
+            }
+            cc.append(seen_obj)
+
+    bcc = []
+    if len(forward.sent["bcc"]) > 0:
+        for email in forward.sent["bcc"]:
+            seen_obj = {
+                "email_id": email,
+                "read": False,
+            }
+            bcc.append(seen_obj)
+
+    forward_obj = {
+        "id": forward_id,
+        "sent": {
+            "from_email": forward.sent["from_email"],
+            "to_email": to_email,
+            "cc": cc,
+            "bcc": bcc,
+            "sent_at": current_time
+        },
+        "reply": {
+            "reply_ids": [],
+            "has_reply": False,
+        },
+        "forward": {
+            "parent_id": forward.parent_id,
+            "is_forward": True,
+            "forward_ids": [],
+            "has_forwards": False,
+        },
+        "subject": forward.subject,
+        "body": forward.body,
+    }
+
+    client.privatemail.emails.insert_one(forward_obj)
+    return {
+        "message": "Successfully Forwarded..."
+    }
+
 
 if __name__ == "__main__":
-    uvicorn.run(app_dir="./apis", app="server:app", host=HOST, port=PORT, reload=True,
+    uvicorn.run(app="server:app", host=HOST, port=PORT, reload=True,
                 log_level="debug")

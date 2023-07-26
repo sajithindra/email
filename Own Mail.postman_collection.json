@@ -37,7 +37,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"sent\": {\n        \"from_email\": \"navin30@navin.com\",\n        \"to_email\": [\n            \"navin3d@navin.com\"\n        ],\n        \"cc\": [],\n        \"bcc\": []\n    },\n  \"subject\": \"lakalakalaka\",\n  \"body\": \"hi shivaji lakalakalaka.\"\n}",
+							"raw": "{\n    \"sent\": {\n        \"from_email\": \"navin30@navin.com\",\n        \"to_email\": [\n            \"navin3d@navin.com\"\n        ],  \n        \"cc\": [],\n        \"bcc\": []\n    },\n  \"subject\": \"lakalakalaka\",\n  \"body\": \"hi shivaji lakalakalaka.\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -146,10 +146,31 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Forward Mail",
 					"request": {
-						"method": "GET",
-						"header": []
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"parent_id\": \"OBnVSNnXCrMAuFpZPZSLckRAhLngHkbOoqYCDqDqhVRKocuWOR\",\n    \"sent\": {\n        \"bcc\": [],\n        \"cc\": [],\n        \"from_email\": \"navin3d@navin.com\",\n        \"to_email\": [\n            \"sajith@navin.com\"\n        ]\n    },\n    \"subject\": \"testing 1\",\n    \"body\": \"testing 1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/mail/forward",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"mail",
+								"forward"
+							]
+						}
 					},
 					"response": []
 				},
@@ -160,7 +181,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"parent_id\": \"KoDoPziCcdKEYuIgsUPebHpJCHAzHUAQZvkyKFsMRgRiILaiRG\",\n  \"from_email\": \"navin3d@navin.com\",\n  \"subject\": \"testing reply 1\",\n  \"body\": \"hi navin 1\"\n}",
+							"raw": "{\n  \"parent_id\": \"yebGJjieNsGQtGCZlpafeNyxogNnQeLdsDynGNlQyENoZbIUvB\",\n  \"from_email\": \"navin3d@navin.com\",\n  \"subject\": \"testing reply 1\",\n  \"body\": \"hi navin 1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -194,7 +215,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"first_name\": \"navin\",\n  \"last_name\": \"durai\",\n  \"username\": \"navin\",\n  \"email_id\": \"navin30@navin.com\",\n  \"password\": \"password\"\n}",
+							"raw": "{\n  \"first_name\": \"sajith\",\n  \"last_name\": \"su\",\n  \"username\": \"sajith3d\",\n  \"email_id\": \"sajith3d@navin.com\",\n  \"password\": \"password\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
